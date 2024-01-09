@@ -1,14 +1,60 @@
 class ProductManager {
-    static id = 0; 
-    constructor (products){
-       
-        this.products= products;
-        ProductManager.id++
-        this.id = ProductManager.id;
-        this.description = description;
-        this.price = price;
-        this.thumbnail = thumbnail;
-        this.stock = stock;
+  constructor() {
+    this.products = [];
+    this.nextId = 1;
+  }
+
+  addProduct(title, description, price, thumbnail, code, stock) { 
+    if (!title || !description || !price || !thumbnail || !code || !stock){
+        console.error("Todos los campos son obligatorios.");
+        return;
     }
-}
-console.log (ProductManager)
+
+    if (this.products.some(product => product.code === code)) {
+        console.error("El código ya está en uso. Introduce un código único.");
+        return;
+    }
+
+    const newProduct = {
+        id: this.nextId++,
+        title,
+        description,
+        price,
+        thumbnail,
+        code,
+        stock
+    };
+
+    this.products.push(newProduct);
+    console.log("El Producto ha sido agregado correctamente:", newProduct);
+  }
+
+  getProducts() {
+    return this.products;
+  }
+
+  getProductById(id) {
+    const product = this.products.find(product => product.id === id);
+
+    if (product) {
+        return product;
+    }
+    else {
+        console.error("El Producto no ha sido encontrado. ID:", id);
+        return null;
+    }
+    }
+  }
+
+  const productManager = new ProductManager();
+
+  productManager.addProduct("Producto 1", 10.50, "imagen1.jpg", "P001", 40);
+  productManager.addProduct("Producto 2", 12.50, "imagen2.jpg", "P002", 50);
+
+  const allProducts = productManager.getProducts();
+  console.log("Todos los productos:", allProducts);
+  
+  const productById = productManager.getProductById(1);
+  console.log("Producto por ID:", productById);
+
+  const nonExistingProduct = productManager.getProductById(4);
