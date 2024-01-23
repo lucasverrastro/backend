@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 class ProductManager {
     constructor(path) {
       this.path = path;
@@ -44,7 +46,7 @@ class ProductManager {
     }
   
     saveToFile() {
-      const fs = require('fs');
+
       const data = JSON.stringify(this.products, null, 2);
       
       fs.writeFileSync(this.path, data, 'utf8');
@@ -52,7 +54,6 @@ class ProductManager {
     }
   
     loadFromFile() {
-      const fs = require('fs');
   
       try {
         const data = fs.readFileSync(this.path, 'utf8');
@@ -76,7 +77,25 @@ class ProductManager {
     
         this.saveToFile();
       }
+      
+      updateProduct(id, updatedData){
+      const productIndex = this.products.findIndex((product) => product.id === id);
+  
+      if (productIndex === -1) {
+        console.error('El Producto no ha sido encontrado. ID:', id);
+        return;
+      }
+  
+      const updatedProduct = { ...this.products[productIndex], ...updatedData };
+      this.products[productIndex] = updatedProduct;
+  
+      console.log('Producto actualizado:', updatedProduct);
+  
+      this.saveToFile();
     }
+    }
+
+  
   
   const productManager = new ProductManager('ruta_del_archivo.json');
   
