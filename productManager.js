@@ -5,6 +5,8 @@ class ProductManager {
       this.path = path;
       this.products = [];
       this.nextId = 1;
+
+      this.loadFromFile();
     }
   
     addProduct(title, description, price, thumbnail, code, stock) { 
