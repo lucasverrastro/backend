@@ -8,6 +8,30 @@ async function cargarArchivos(){
 }
 cargarArchivos();
 
+const limit = parseInt(req.query.limit);
+let products = manager.getProducts();
+
+if (!isNaN(limit)) {
+  products = products.slice(0, limit); 
+}
+res.json(products)
+
+server.get('/products/:pid', async (req, res) => {
+  try {
+    const productId = parseInt(req.params.pid)
+    const product = productManager.getProductById(productId)
+
+    if (product) {
+      res.json({ product })
+    } else {
+      res.status(404).json({ error: 'Producto no encontrado' })
+    }
+  } catch (error) {
+    console.error('Error al obtener producto:', error.message)
+    res.status(500).json({ error: 'Server Error' })
+  }
+})
+
 const allProducts = manager.getProducts();
 console.log("Todos los productos:", allProducts);
 

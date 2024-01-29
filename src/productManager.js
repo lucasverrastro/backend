@@ -76,6 +76,7 @@ class ProductManager {
       } catch (error) {
         console.error('Error al cargar datos desde el archivo:', error.message);
       }
+      
     }
 
     deleteProduct(id) {
