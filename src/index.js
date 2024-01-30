@@ -1,5 +1,5 @@
 const ProductManager = require("./productManager");
-
+const fs = require('fs');
 const manager = new ProductManager('./src/products.json');
   
 async function cargarArchivos(){
@@ -30,7 +30,26 @@ server.get('/products/:pid', async (req, res) => {
     console.error('Error al obtener producto:', error.message)
     res.status(500).json({ error: 'Server Error' })
   }
-})
+}) 
+
+
+
+
+const carritoJSON = fs.readFileSync('carrito.json');
+const carrito = JSON.parse(carritoJSON);
+
+const nuevoProducto = {
+  "id": 3,
+  "quantity":1
+};
+
+carrito.carrito.push(nuevoProducto);
+
+
+fs.writeFileSync('carrito.json', JSON.stringify(carrito, null, 2));
+
+console.log('Producto agregado al carrito con éxito.');
+
 
 const allProducts = manager.getProducts();
 console.log("Todos los productos:", allProducts);
