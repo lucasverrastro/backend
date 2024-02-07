@@ -1,5 +1,6 @@
 const fs = require('fs');
 
+
 class ProductManager {
   static id = 0;
     constructor(path) {

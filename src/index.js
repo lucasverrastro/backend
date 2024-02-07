@@ -33,8 +33,6 @@ server.get('/products/:pid', async (req, res) => {
 }) 
 
 
-
-
 const carritoJSON = fs.readFileSync('carrito.json');
 const carrito = JSON.parse(carritoJSON);
 
