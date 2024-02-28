@@ -1,45 +1,53 @@
-import express from "express";
-import __dirname from "./utils.js";
-import handlebars from "express-handlebars";
-import viewsRouter from ".routes/views.router.js";
-import { Server } from "socket.io";
-
+const express = require("express");
+const exphbs = require("express-handlebars");
 const app = express();
-const httpServer = app.listen(8080,()=>console.log("Escuchando a traves del puerto 8080"));
+const PORT = 8080;
+const productsRouter = require("./routes/products.router");
+const cartsRouter = require("./routes/carts.router");
+const chatRouter = require("./routes/chat.router");
+const productsViewsRouter = require("./routes/products_views.router");
+
+// initiate db
+require("./dababase.js");
+
+// Middlewares
+app.use(express.static("./src/public"));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Server init
+const httpServer = app.listen(PORT, () => {
+  console.log(`Listening to port ${PORT}`);
+});
+
+// Handlebars config
+app.engine("handlebars", exphbs.engine());
+app.set("view engine", "handlebars");
+app.set("views", "src/views");
+
+// Routes
+// Se separo el router de vistas de products y de CRUD de products.
+app.use("/api/products", productsRouter);
+
+app.use("/api/carts", cartsRouter);
 
 
-const socketServer = new Server(httpServer);
-
-app.engine("handlebars",handlebars.engine());
-app.set("views",__dirname+"/views");
-app.set("views engine","handlebars");
-app.use(express.static(__dirname+"/src"));
-app.use("/",viewsRouter);
-
-
-const express = require("express")
-
-const server = express();
-
-server.get("/", (req, res)=>{
-    res.send("Hola Mundo")
-})
-
-server.get("/products", (req, res) => {
-    const limit = req.query.limit;
-
-    let productsToSend = productManager.getProducts(limit);
-    res.json(productsToSend);
-})
-
-server.listen(8080, ()=>console.log("El servidor está corriendo en el puerto 8080"))
-
-server.get("/products", (req, res)=>{
-    let objeto = {title, description, price, thumbnail, code, stock}
-    res.send()
-})
+app.use(
+  "/api/products_views",
+  (req, res, next) => {
+    req.httpServer = httpServer;
+    next();
+  },
+  productsViewsRouter
+);
 
 
-socketServer.on("connection",socket=>{
-    console.log("Nuevo cliente conectado")
-})
+// Route with middleware passing httpServer
+app.use(
+  "/api/chat",
+  (req, res, next) => {
+    req.httpServer = httpServer;
+    next();
+  },
+  chatRouter
+);

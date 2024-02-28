@@ -1,4 +1,3 @@
-// Importar Express y crear una instancia de la aplicación
 const express = require('express');
 const app = express();
 const PORT = 8080; 
